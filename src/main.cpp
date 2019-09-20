@@ -113,12 +113,12 @@ void processCommand()
     break;
   case 'h':
     // mute = 0;
-    // setMute();
+    dac->unmute();
     // main_disp(false);
     break;
   case 'i':
     // mute = 1;
-    // setMute();
+    dac->mute();
     // main_disp(false);
     break;
   case 'j':
@@ -128,37 +128,37 @@ void processCommand()
     break;
   case '0':
     // filter = 0;
-    // setFilter();
+    dac->setFilter(0);
     // main_disp(false);
     break;
   case '1':
     // filter = 1;
-    // setFilter();
+    dac->setFilter(1);
     // main_disp(false);
     break;
   case '2':
     // filter = 2;
-    // setFilter();
+    dac->setFilter(2);
     // main_disp(false);
     break;
   case '3':
     // filter = 3;
-    // setFilter();
+    dac->setFilter(3);
     // main_disp(false);
     break;
   case '4':
     // filter = 4;
-    // setFilter();
+    dac->setFilter(4);
     // main_disp(false);
     break;
   case '5':
     // filter = 5;
-    // setFilter();
+    dac->setFilter(5);
     // main_disp(false);
     break;
   case '6':
     // filter = 6;
-    // setFilter();
+    dac->setFilter(6);
     // main_disp(false);
     break;
   case 'y':

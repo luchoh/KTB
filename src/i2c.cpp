@@ -1,6 +1,9 @@
 #include <i2c.h>
 #include <globals.h>
 
+
+bool I2C::initialized = false;
+
 I2C::I2C()
 {
     Serial.println(F("Initializing I2C"));
@@ -9,8 +12,13 @@ I2C::I2C()
 
 void I2C::setup()
 {
-    Wire.begin(); // Join The I2C Bus As A Master
-    Serial.println(F("Wire initialized"));
+    if(!initialized) {
+        Wire.begin(); // Join The I2C Bus As A Master
+        Serial.println(F("Wire initialized"));
+    } else {
+        Serial.println(F("Wire already initialized"));
+    }
+    I2C::initialized = true;
 }
 
 // ----------------------------- Function that reads a register's data value --------------------------------------------------------------------
@@ -48,4 +56,18 @@ void I2C::ChangeBit(int devaddr, byte regaddr, int data, boolean setting)
         bitClear(r, data);
     }
     WriteRegister(devaddr, regaddr, r);
+}
+
+void I2C::ChangeMultipleBits(int devaddr, byte regaddr, int data, int mask) {
+    byte target = ReadRegister(devaddr, regaddr);
+    int result = 0;
+    for (int i = 7; i >= 0; i--)
+    {
+        if((((1 << i) & mask) >> i)==0) {// take it from the register
+            result = result | (255 & ((((1 << i) & target) >> i) << i));
+        } else {//take it from the data
+            result = result | (255 & ((((1 << i) & data) >> i) << i));
+        }
+    }
+    WriteRegister(devaddr, regaddr, result);
 }

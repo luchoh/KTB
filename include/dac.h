@@ -49,11 +49,18 @@ public:
 
     byte getDacAddress();
 
-    void setInput();
+    void setAutoSignalDetection(bool autosignal, bool spdif);
+    void setGPIO(int mask);
+    void setInput(int input);
+    int getInput();
     void setVol();
-    void setFilter();
+    int getFilter();
+    void setFilter(int filter);
     void setIIR();
-    void setMute();
+    int getMute();
+    void mute();
+    void unmute();
+    void setMute(int mute);
     void setDPLLPCM();
     void setDPLLDSD();
     void setLockSpeed();
@@ -66,6 +73,11 @@ public:
 
     void PrintDebugRegAll(byte dac);
     void PrintDebugReg(byte dac);
+
+private:
+    int DPLL_PCM;
+    int DPLL_DSD;
+    DAC_Input Input[TOTALINPUTS]; // Declare structures of Inputs
 };
 
 #endif

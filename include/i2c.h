@@ -14,6 +14,10 @@ public:
     byte ReadRegister(int devaddr, byte regaddr);
     void WriteRegister(int devaddr, byte regaddr, byte dataval);
     void ChangeBit(int devaddr, byte regaddr, int data, boolean setting);
+    void ChangeMultipleBits(int devaddr, byte regaddr, int data, int mask);
+
+private:
+    static bool initialized;
 };
 
 #endif
