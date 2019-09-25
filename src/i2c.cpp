@@ -44,30 +44,12 @@ void I2C::WriteRegister(int devaddr, byte regaddr, byte dataval)
 }
 
 // ----------------------------- Function that changes a single bit in a register --------------------------------------------------------------------
-void I2C::ChangeBit(int devaddr, byte regaddr, int data, boolean setting)
+void I2C::ChangeBit(int devaddr, byte regaddr, int location, boolean setting)
 {
-    byte r = ReadRegister(devaddr, regaddr);
-    if (setting == 1)
-    {
-        bitSet(r, data);
-    }
-    else if (setting == 0)
-    {
-        bitClear(r, data);
-    }
-    WriteRegister(devaddr, regaddr, r);
+    I2C::ChangeMultipleBits(devaddr, regaddr, (1 << location), (setting << location));
 }
 
 void I2C::ChangeMultipleBits(int devaddr, byte regaddr, int data, int mask) {
     byte target = ReadRegister(devaddr, regaddr);
-    int result = 0;
-    for (int i = 7; i >= 0; i--)
-    {
-        if((((1 << i) & mask) >> i)==0) {// take it from the register
-            result = result | (255 & ((((1 << i) & target) >> i) << i));
-        } else {//take it from the data
-            result = result | (255 & ((((1 << i) & data) >> i) << i));
-        }
-    }
-    WriteRegister(devaddr, regaddr, result);
+    WriteRegister(devaddr, regaddr, ((target & ~mask) | (data & mask)));
 }

@@ -279,45 +279,31 @@ void DAC::setFilter(int filter)
   {
     if (filter == 0)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 0);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B00000000, B11100000);
     }
     else if (filter == 1)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 1);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B00100000, B11100000);
     }
     else if (filter == 2)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 0);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B01000000, B11100000);
     }
     else if (filter == 3)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 1);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B01100000, B11100000);
     }
     else if (filter == 4)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 0);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 0);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B10000000, B11100000);
     }
     else if (filter == 5)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 0);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B11000000, B11100000);
     }
     else if (filter == 6)
     {
-      i2c->ChangeBit(dacAddr, 0x07, 7, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 6, 1);
-      i2c->ChangeBit(dacAddr, 0x07, 5, 1);
+      i2c->ChangeMultipleBits(dacAddr, 0x07, B11100000, B11100000);
     }
     Serial.print(F("Filter set to: "));
     Serial.println(filter);
@@ -352,66 +338,39 @@ void setDPLLPCM(int dpll_pcm = 5)
 {
   if (dpll_pcm == 0)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 0);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B00000000, B11110000);
   }
   else if (dpll_pcm == 1)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B00010000, B11110000);
   }
   else if (dpll_pcm == 2)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B00110000, B11110000);
   }
   else if (dpll_pcm == 3)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B01010000, B11110000);
   }
   else if (dpll_pcm == 4)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B01110000, B11110000);
   }
   else if (dpll_pcm == 5)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B10010000, B11110000);
   }
   else if (dpll_pcm == 6)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B10110000, B11110000);
   }
   else if (dpll_pcm == 7)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 0);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B11010000, B11110000);
   }
   else if (dpll_pcm == 8)
   {
-    i2c->ChangeBit(dacAddr, 0x0C, 7, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 6, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 5, 1);
-    i2c->ChangeBit(dacAddr, 0x0C, 4, 1);
+    i2c->ChangeMultipleBits(dacAddr, 0x0C, B11110000, B11110000);
   }
 }
 
