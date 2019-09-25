@@ -28,11 +28,12 @@ bool lock = 0;
 bool lockOld = 0;
 
 I2C *i2c;
+DAC_Input Input[TOTALINPUTS];
 
 DAC::DAC()
 {
-    i2c = new I2C();
-    DAC_Input ipt = Input[TOTALINPUTS];
+    i2c->setup();
+    
     if (poweron == true)
     {
         DPLL_PCM = 5;
@@ -50,29 +51,23 @@ void DAC::setup()
     delay(500);                          // Wait for 500ms
     i2c->ChangeBit(dacAddr, 0x00, 0, 0); // Take DAC out of RESET mode
     mute();                  // Put DAC in mute
-    // i2c->ChangeBit(dacAddr, 0x09, 7, 0); // Setup GPIO4
-    // i2c->ChangeBit(dacAddr, 0x09, 6, 1); // Setup GPIO4
-    // i2c->ChangeBit(dacAddr, 0x09, 5, 0); // Setup GPIO4
-    // i2c->ChangeBit(dacAddr, 0x09, 4, 0); // Setup GPIO4
-    // i2c->ChangeBit(dacAddr, 0x0F, 2, 1); // Set DAC up for Stereo Mode
-    // i2c->ChangeBit(dacAddr, 0x36, 7, 0); // Enable DoP support
+
+    // i2c->ChangeMultipleBits(dacAddr, 0x09, B01000000, B11110000); // Setup GPIO4 ?
+    i2c->ChangeMultipleBits(dacAddr, 0x0F, B00000100, B00000100); // Set DAC up for Stereo Mode
+    i2c->ChangeMultipleBits(dacAddr, 0x36, B00000000, B10000000); // Enable DoP support
     unmute();                  // Take DAC out of mute
-    // preamp = Settings1.variable;
-    // preamp_def_vol = Settings1.preamp_def_vol;
 
-    // if (preamp == true)
-    // {
-    //     volume = preamp_def_vol;
-    // }
-
-    // ipt = 0;
-    // setInput();
-    // setVol();
+    DAC::setInput(0);
+    DAC::setVol(55);
 }
 
 byte DAC::getDacAddress()
 {
     return dacAddr;
+}
+
+void DAC::setVol(int level) {
+
 }
 
 
@@ -130,11 +125,39 @@ void DAC::setInput(int ipt)
     int filter = 0;
   if (ipt == 0) // Select I2S/DSD ipt 1 with Auto detection
   {
-    // mcp.digitalWrite(7, HIGH);      // Select I2S on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, HIGH); // Select I2S on the Solid State Sidecar (if not using MCP chip)
-    // mcp.digitalWrite(6, LOW);       // Select I2S ipt 1 on SSS.
     setAutoSignalDetection(true, false);
     setGPIO(B00000000);
+  }
+  else if (ipt == 1) // Select I2S/DSD ipt 2 with Auto detection
+  {
+    setAutoSignalDetection(true, false);
+    setGPIO(B00000000);
+  }
+  else if (ipt == 2) // Select s/pdif from DATA1 pin
+  {
+    setAutoSignalDetection(false, true);
+    setGPIO(B00010000);
+  }
+  else if (ipt == 3) // Select s/pdif from DATA2 pin
+  {
+    setAutoSignalDetection(false, true);
+    setGPIO(B00100000);
+  }
+  else if (ipt == 4) // Select s/pdif from DATA3 pin
+  {
+    setAutoSignalDetection(false, true);
+    setGPIO(B00110000);
+  }
+  else if (ipt == 5) // Select s/pdif from DATA4 pin
+  {
+    setAutoSignalDetection(false, true);
+    setGPIO(B01000000);
+  }
+  setFilter(Input[ipt].filter_val);
+  setIIR(Input[ipt].IIR_val);
+  setLockSpeed(Input[ipt].lockspeed_val);
+  // setDither(Input[1].dither_val);
+  // setJitterElim(Input[1].jitter_elim_val);
     filter = Input[0].filter_val;
     setFilter(filter);
     // IIR = Input[0].IIR_val;
@@ -151,37 +174,15 @@ void DAC::setInput(int ipt)
     // auto_deemph = Input[0].auto_deemph_val;
     // deemph_sel = Input[0].deemph_sel_val;
     // setDeemphasis();
-  }
-  else if (ipt == 1) // Select I2S/DSD ipt 2 with Auto detection
-  {
-    // mcp.digitalWrite(7, HIGH);      // Select I2S on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, HIGH); // Select I2S on the Solid State Sidecar (if not using MCP chip)
-    // mcp.digitalWrite(6, HIGH);      // Select I2S ipt 2 on SSS.
-    setAutoSignalDetection(true, false);
-    setGPIO(B00000000);
-    filter = Input[1].filter_val;
-    setFilter(filter);
-    // IIR = Input[1].IIR_val;
-    // setIIR();
-    // LockSpeed = Input[1].lockspeed_val;
-    // setLockSpeed();
-    // Dither = Input[1].dither_val;
-    // setDither();
-    // JitterElim = Input[1].jitter_elim_val;
-    // setJitterElim();
+  
+    
     // bypass_osf = Input[1].bypass_osf_val;
     // deemph_bypass = Input[1].deemph_bypass_val;
     // setOSF();
     // auto_deemph = Input[1].auto_deemph_val;
     // deemph_sel = Input[1].deemph_sel_val;
     // setDeemphasis();
-  }
-  else if (ipt == 2) // Select s/pdif from DATA1 pin
-  {
-    // mcp.digitalWrite(7, LOW);      // Select SPDIF on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, LOW); // Select SPDIF on the Solid State Sidecar (if not using MCP chip)
-    setAutoSignalDetection(false, true);
-    setGPIO(B00010000);
+  
     filter = Input[2].filter_val;
     setFilter(filter);
     // IIR = Input[2].IIR_val;
@@ -198,13 +199,7 @@ void DAC::setInput(int ipt)
     // auto_deemph = Input[2].auto_deemph_val;
     // deemph_sel = Input[2].deemph_sel_val;
     // setDeemphasis();
-  }
-  else if (ipt == 3) // Select s/pdif from DATA2 pin
-  {
-    // mcp.digitalWrite(7, LOW);      // Select SPDIF on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, LOW); // Select SPDIF on the Solid State Sidecar (if not using MCP chip)
-    setAutoSignalDetection(false, true);
-    setGPIO(B00100000);
+  
     filter = Input[3].filter_val;
     setFilter(filter);
     // IIR = Input[3].IIR_val;
@@ -221,13 +216,7 @@ void DAC::setInput(int ipt)
     // auto_deemph = Input[3].auto_deemph_val;
     // deemph_sel = Input[3].deemph_sel_val;
     // setDeemphasis();
-  }
-  else if (ipt == 4) // Select s/pdif from DATA3 pin
-  {
-    // mcp.digitalWrite(7, LOW);      // Select SPDIF on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, LOW); // Select SPDIF on the Solid State Sidecar (if not using MCP chip)
-    setAutoSignalDetection(false, true);
-    setGPIO(B00110000);
+  
     filter = Input[4].filter_val;
     setFilter(filter);
     IIR = Input[4].IIR_val;
@@ -244,13 +233,7 @@ void DAC::setInput(int ipt)
     // auto_deemph = Input[4].auto_deemph_val;
     // deemph_sel = Input[4].deemph_sel_val;
     // setDeemphasis();
-  }
-  else if (ipt == 5) // Select s/pdif from DATA4 pin
-  {
-    // mcp.digitalWrite(7, LOW);      // Select SPDIF on the Solid State Sidecar
-    // digitalWrite(SIDECARPIN, LOW); // Select SPDIF on the Solid State Sidecar (if not using MCP chip)
-    setAutoSignalDetection(false, true);
-    setGPIO(B01000000);
+  
     filter = Input[5].filter_val;
     setFilter(filter);
     // IIR = Input[5].IIR_val;
@@ -267,7 +250,7 @@ void DAC::setInput(int ipt)
     // auto_deemph = Input[5].auto_deemph_val;
     // deemph_sel = Input[5].deemph_sel_val;
     // setDeemphasis();
-  }
+
 #ifdef DEBUG
   Serial.print(F("Input set to: "));
 #endif
