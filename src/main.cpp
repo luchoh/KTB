@@ -78,17 +78,17 @@ void processCommand()
   {
   case 'a':
     // input = 0;
-    // setInput();
+    dac->setInput(1);
     // main_disp(false);
     break;
   case 'b':
     // input = 1;
-    // setInput();
+    dac->setInput(2);
     // main_disp(false);
     break;
   case 'c':
     // input = 2;
-    // setInput();
+    dac->setInput(3);
     // main_disp(false);
     break;
   case 'd':
@@ -171,7 +171,7 @@ void processCommand()
     // initEEPROM();
     break;
   case '@':
-    // DeviceInit();
+    dac->initDAC();
     break;
   case '^':
     // testEEPROM();
