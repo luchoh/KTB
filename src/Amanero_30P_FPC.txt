@@ -1,0 +1,3 @@
+Amanero PIN4    ->  DSD_1   PIN23 on 30P_FPC (BLCK) -> DATA_CLK ES9038qm2 - DSD Bit Clock
+Amanero PIN3    ->  DSD_2   PIN25 on 30P_FPC (SIN0) -> DATA_2   ES9038qm2 - DSD DATA 2 (R)
+Amanero PIN5    ->  DSD_CLK PIN21 on 30P_FPC (LRCK) -> DATA_1   ES9038qm2 - DSD DATA 1 (L)
